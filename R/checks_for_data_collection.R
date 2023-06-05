@@ -6,14 +6,14 @@ library(supporteR)
 
 # read data and tool ----------------------------------------------------------
 # data
-df_tool_data <- readxl::read_excel("inputs/ETH2303_jrma_somali_data.xlsx") |>  
-    mutate(start = as_datetime(start),
-           end = as_datetime(end)) |> 
+df_tool_data <- readxl::read_excel("inputs/ETH2303_JRMA_Somali_data.xlsx") |>  
+    mutate(start = as_datetime(startTime),
+           end = as_datetime(endTime)) |> 
     checks_add_extra_cols(input_enumerator_id_col = "enumerator_id",
-                          input_location_col = "hh_kebele")
+                          input_location_col = "woreda1")
 
 # tool
-loc_tool <- "inputs/ETH2303_jrma_somali_data.xlsx"
+loc_tool <- "inputs/ETH2303_JRMA_Somali_tool.xlsx"
 
 df_survey <- readxl::read_excel(loc_tool, sheet = "survey")
 df_choices <- readxl::read_excel(loc_tool, sheet = "choices")
@@ -25,7 +25,7 @@ checks_output <- list()
 # testing data ------------------------------------------------------------
 
 df_testing_data <- df_tool_data |> 
-    filter(i.check.start_date < as_date("2023-06-05")) |> 
+    filter(i.check.start_date < as_date("2023-06-03")) |> 
     mutate(i.check.type = "remove_survey",
            i.check.name = "",
            i.check.current_value = "",
@@ -52,7 +52,7 @@ max_time_of_survey <- 120
 
 df_c_survey_time <-  supporteR::check_survey_time(input_tool_data = df_tool_data, 
                                                   input_enumerator_id_col = "enumerator_id",
-                                                  input_location_col = "hh_kebele",
+                                                  input_location_col = "woreda1",
                                                   input_min_time = min_time_of_survey, 
                                                   input_max_time = max_time_of_survey)
 
@@ -68,7 +68,7 @@ add_checks_data_to_list(input_list_name = "checks_output", input_df_name = "df_c
 
 df_c_outliers <- supporteR::check_outliers_cleaninginspector(input_tool_data = df_tool_data,
                                                              input_enumerator_id_col = "enumerator_id",
-                                                             input_location_col = "hh_kebele")
+                                                             input_location_col = "woreda1")
 
 add_checks_data_to_list(input_list_name = "checks_output", input_df_name = "df_c_outliers")
 
@@ -76,7 +76,7 @@ add_checks_data_to_list(input_list_name = "checks_output", input_df_name = "df_c
 
 df_others_data <- supporteR::extract_other_specify_data(input_tool_data = df_tool_data, 
                                                         input_enumerator_id_col = "enumerator_id",
-                                                        input_location_col = "hh_kebele",
+                                                        input_location_col = "woreda1",
                                                         input_survey = df_survey,  
                                                         input_choices = df_choices)
 
@@ -86,12 +86,11 @@ add_checks_data_to_list(input_list_name = "checks_output", input_df_name = "df_o
 # logical checks ----------------------------------------------------------
 
 
-
-
 # combined  checks --------------------------------------------------------
 
 df_combined_checks <- bind_rows(checks_output)
 
 # output the log
-write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_eth_msna_oromia.csv"), na = "")
+
+write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_eth_jrma_somali.csv"), na = "")
 
