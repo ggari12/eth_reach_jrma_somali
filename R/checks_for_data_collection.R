@@ -93,5 +93,5 @@ add_checks_data_to_list(input_list_name = "checks_output", input_df_name = "df_o
 df_combined_checks <- bind_rows(checks_output)
 
 # output the log
-write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_eth_msna_oromia.csv"), na = "")
+write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_eth_jrma_somali.csv"), na = "")
 
