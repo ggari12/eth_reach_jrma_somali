@@ -7,10 +7,12 @@ library(supporteR)
 # read data and tool ----------------------------------------------------------
 # data
 df_tool_data <- readxl::read_excel("inputs/ETH2303_jrma_somali_data.xlsx") |>  
-    mutate(start = as_datetime(start),
-           end = as_datetime(end)) |> 
-    checks_add_extra_cols(input_enumerator_id_col = "enumerator_id",
-                          input_location_col = "woreda1")
+  mutate(start = as_datetime(startTime),
+         end = as_datetime(endTime)) |> 
+  checks_add_extra_cols(input_enumerator_id_col = "enumerator_id",
+                        input_location_col = "woreda1") |> 
+  rename_with(~str_replace(string = .x, pattern = "_os$", replacement = "_other")) |> 
+  rename(barrier_other = finacial_barrier_other)
 
 # tool
 loc_tool <- "inputs/ETH2303_jrma_somali_tool.xlsx"
