@@ -88,8 +88,8 @@ df_cl_surveys_for_deletion <- df_cl_deletion |>
     summarise(surveys_for_deletion = n())
 
 # sample data
-df_samples_required <- readxl::read_excel("../support_files/jrma_samples_size.xlsx") |> 
-    select(woreda1, required_samples = woreda_sample_size)
+df_samples_required <- readxl::read_excel("../support_files/jrma_sample_size.xlsx") |> 
+    select(woreda1, required_samples = tot_sample_size)
 
 # tool
 loc_tool <- "../inputs/ETH2303_JRMA_Somali_tool.xlsx"
