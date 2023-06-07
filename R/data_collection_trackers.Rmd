@@ -25,6 +25,7 @@ library(leaflet)
 # read data
 df_tool_data <- readxl::read_excel("../inputs/ETH2303_JRMA_Somali_data.xlsx")  |>  
     mutate(uuid = `_uuid`,
+           loc_repondent_type = paste0(woreda1, "_", repondent_type),
            start_date = as_date(startTime),
            start = as_datetime(startTime),
            end = as_datetime(endTime),
@@ -40,10 +41,10 @@ df_days_for_data_collection <- df_tool_data |>
 
 # cleaning log handling
 df_data_support_cl_log <- df_tool_data |> 
-    select(uuid, zone1, woreda1, latitude, longitude)
+    select(uuid, zone1, loc_repondent_type, latitude, longitude)
 
 df_cl_log <- read_csv(file = "../inputs/combined_checks_eth_jrma_somali.csv") |> 
-    left_join(df_data_support_cl_log |> select(-woreda1), by = "uuid")
+    left_join(df_data_support_cl_log, by = "uuid")
 
 # change_response logs that affect stats in the data collection progress
 cl_log_change_response <- df_cl_log |> 
@@ -81,15 +82,15 @@ df_enum_performance <- df_updated_tool_data |>
 # surveys for deletion
 df_cl_deletion <- df_cl_log |> 
     filter(type %in% "remove_survey", reviewed == 1, !adjust_log %in% "delete_log") |>
-    distinct(woreda1, uuid)
+    distinct(loc_repondent_type, uuid)
 
 df_cl_surveys_for_deletion <- df_cl_deletion |>
-    group_by(woreda1) |>
+    group_by(loc_repondent_type) |>
     summarise(surveys_for_deletion = n())
 
 # sample data
 df_samples_required <- readxl::read_excel("../support_files/jrma_sample_size.xlsx") |> 
-    select(woreda1, required_samples = tot_sample_size)
+    select(loc_repondent_type, required_samples = tot_sample_size)
 
 # tool
 loc_tool <- "../inputs/ETH2303_JRMA_Somali_tool.xlsx"
@@ -128,12 +129,12 @@ Last date of data collection: **`r df_days_for_data_collection[length(df_days_fo
 df_samp_per_location <- df_samples_required
 
 df_updated_tool_data |> 
-    group_by(woreda1) |> 
+    group_by(loc_repondent_type) |> 
     summarise(number_of_surveys = n()) |> 
-    arrange(woreda1) |> 
-    full_join(df_samp_per_location, by = c("woreda1" = "woreda1")) |>
+    arrange(loc_repondent_type) |> 
+    full_join(df_samp_per_location, by = c("loc_repondent_type" = "loc_repondent_type")) |>
     mutate(required_samples = ifelse(is.na(required_samples), 0, required_samples)) |> 
-    left_join(df_cl_surveys_for_deletion, by = "woreda1") |> 
+    left_join(df_cl_surveys_for_deletion, by = "loc_repondent_type") |> 
     mutate(number_of_surveys = ifelse(is.na(number_of_surveys), 0, number_of_surveys),
            surveys_for_deletion = ifelse(is.na(surveys_for_deletion), 0, surveys_for_deletion),
            int.surveys_and_deletion = number_of_surveys - surveys_for_deletion,
@@ -151,7 +152,7 @@ The average survey time for all the data is: **`r get_average_survey_time(df_upd
 ```{r, echo = FALSE}
 
 df_enum_performance |> 
-    group_by(zone1, woreda1, start_date, enumerator_id) |> 
+    group_by(zone1, loc_repondent_type, start_date, enumerator_id) |> 
     summarise(number_of_interviews_done = n(), `average_survey_time(minutes)` = round(mean(int.survey_time_interval, na.rm = TRUE), 0)) |> 
     dt_options_fewcols()
 ```
@@ -220,7 +221,7 @@ labels_pts <- ~sprintf(
 
 df_cl_log |> 
     filter(type == "remove_survey", reviewed == 1, !adjust_log %in% c("delete_log")) |> 
-    group_by(uuid, woreda1, latitude, longitude) |> 
+    group_by(uuid, loc_repondent_type, latitude, longitude) |> 
     summarise(start_date = paste(start_date, collapse = " : "),
               enumerator_id = paste(enumerator_id, collapse = " : "),
               type = paste(type, collapse = " : "),
