@@ -27,7 +27,7 @@ checks_output <- list()
 # testing data ------------------------------------------------------------
 
 df_testing_data <- df_tool_data |> 
-    filter(i.check.start_date < as_date("2023-06-03")) |> 
+    filter(i.check.start_date < as_date("2023-06-05")) |> 
     mutate(i.check.type = "remove_survey",
            i.check.name = "",
            i.check.current_value = "",
@@ -49,7 +49,7 @@ add_checks_data_to_list(input_list_name = "checks_output", input_df_name = "df_t
 # Time checks -------------------------------------------------------------
 
 # Time interval for the survey
-min_time_of_survey <- 30
+min_time_of_survey <- 10
 max_time_of_survey <- 120
 
 df_c_survey_time <-  supporteR::check_survey_time(input_tool_data = df_tool_data, 
