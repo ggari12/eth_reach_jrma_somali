@@ -36,7 +36,8 @@ df_raw_data <- readxl::read_excel(path = loc_data, col_types = c_types) |>
 # tool
 loc_tool <- "inputs/ETH2303_JRMA_Somali_tool.xlsx"
 
-df_survey <- readxl::read_excel(loc_tool, sheet = "survey")
+df_survey <- readxl::read_excel(loc_tool, sheet = "survey") |> 
+  mutate(name=str_replace(name, "_os$", "_other"))
 df_choices <- readxl::read_excel(loc_tool, sheet = "choices") |> 
   mutate(label = `label::English`)
 
