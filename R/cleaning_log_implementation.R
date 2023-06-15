@@ -18,7 +18,7 @@ df_cleaning_log <- read_csv("inputs/combined_checks_eth_jrma_somali.csv", show_c
          sheet = NA,
          index = NA,
          relevant = NA) |>
-  select(uuid, type, name, value, issue_id, relevant, issue)
+  select(uuid, type, name, value, issue_id, sheet, index, relevant, issue)
 
 # raw data
 loc_data <- "inputs/ETH2303_JRMA_Somali_data.xlsx"
@@ -29,11 +29,21 @@ data_nms <- names(readxl::read_excel(path = loc_data, n_max = 2000))
 c_types <- ifelse(str_detect(string = data_nms, pattern = "_os$|_other$"), "text", "guess")
 
 df_raw_data <- readxl::read_excel(path = loc_data, col_types = c_types) |> 
+  mutate(start = as_datetime(startTime),
+         end = as_datetime(endTime)) |> 
   mutate(across(.cols = -c(contains(cols_to_escape)), 
                 .fns = ~ifelse(str_detect(string = ., 
                                           pattern = fixed(pattern = "N/A", ignore_case = TRUE)), "NA", .))) |> 
   rename_with(~str_replace(string = .x, pattern = "_os$", replacement = "_other")) |> 
-  rename(barrier_other = finacial_barrier_other)
+  rename_with(~str_replace(string = .x, pattern = "\\+", replacement = "_")) |> 
+  rename_with(~str_replace(string = .x, pattern = "\\)|\\.", replacement = "")) |> 
+  rename(barrier_other = finacial_barrier_other) |> 
+  mutate(across(.cols = -c(contains(cols_to_escape)), 
+                .fns = ~str_replace(string = ., pattern = "\\)|\\.", replacement = ""))
+         ) |> 
+  mutate(across(.cols = -c(contains(cols_to_escape)), 
+                .fns = ~str_replace(string = ., pattern = "\\+", replacement = "_"))
+         )
 
 # tool
 loc_tool <- "inputs/ETH2303_JRMA_Somali_tool.xlsx"
@@ -41,8 +51,12 @@ loc_tool <- "inputs/ETH2303_JRMA_Somali_tool.xlsx"
 df_survey <- readxl::read_excel(loc_tool, sheet = "survey") |> 
   mutate(name = str_replace(name, "_os$", "_other"),
          name = ifelse(name %in% c("finacial_barrier_other"), "barrier_other", name))
+
 df_choices <- readxl::read_excel(loc_tool, sheet = "choices") |> 
-  mutate(label = `label::English`)
+  mutate(label = `label::English`,
+         name = str_replace(string = name, pattern = "\\)|\\.", replacement = ""),
+         name = str_replace(string = name, pattern = "\\+", replacement = "_"),
+         )
 
 
 # main dataset ------------------------------------------------------------
