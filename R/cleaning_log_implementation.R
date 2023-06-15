@@ -39,19 +39,25 @@ df_raw_data <- readxl::read_excel(path = loc_data, col_types = c_types) |>
 loc_tool <- "inputs/ETH2303_JRMA_Somali_tool.xlsx"
 
 df_survey <- readxl::read_excel(loc_tool, sheet = "survey") |> 
-  mutate(name=str_replace(name, "_os$", "_other"))
+  mutate(name = str_replace(name, "_os$", "_other"),
+         name = ifelse(name %in% c("finacial_barrier_other"), "barrier_other", name))
 df_choices <- readxl::read_excel(loc_tool, sheet = "choices") |> 
   mutate(label = `label::English`)
 
 
 # main dataset ------------------------------------------------------------
+vars_to_remove_from_data = c("deviceid", "audit", "audit_URL", "instance_name",
+                             "gps", "_gps_latitude", "_gps_longitude", "_gps_altitude",
+                             "_gps_precision")
 
 df_cleaning_log_main <-  df_cleaning_log 
 
 df_cleaned_data <- supporteR::cleaning_support(input_df_raw_data = df_raw_data,
                                                input_df_survey = df_survey,
                                                input_df_choices = df_choices,
-                                               input_df_cleaning_log = df_cleaning_log_main)
+                                               input_df_cleaning_log = df_cleaning_log_main,
+                                               input_vars_to_remove_from_data = vars_to_remove_from_data
+                                                )
 
 # Add composite indicators at this stage ----------------------------------
 
