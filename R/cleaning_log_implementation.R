@@ -26,7 +26,7 @@ loc_data <- "inputs/ETH2303_JRMA_Somali_data.xlsx"
 cols_to_escape <- c("start", "end", "today", "startTime",	"endTime", "_submission_time", "_submission__submission_time")
 
 data_nms <- names(readxl::read_excel(path = loc_data, n_max = 2000))
-c_types <- ifelse(str_detect(string = data_nms, pattern = "_os$"), "text", "guess")
+c_types <- ifelse(str_detect(string = data_nms, pattern = "_os$|_other$"), "text", "guess")
 
 df_raw_data <- readxl::read_excel(path = loc_data, col_types = c_types) |> 
   mutate(across(.cols = -c(contains(cols_to_escape)), 
