@@ -31,7 +31,9 @@ c_types <- ifelse(str_detect(string = data_nms, pattern = "_os$|_other$"), "text
 df_raw_data <- readxl::read_excel(path = loc_data, col_types = c_types) |> 
   mutate(across(.cols = -c(contains(cols_to_escape)), 
                 .fns = ~ifelse(str_detect(string = ., 
-                                          pattern = fixed(pattern = "N/A", ignore_case = TRUE)), "NA", .)))
+                                          pattern = fixed(pattern = "N/A", ignore_case = TRUE)), "NA", .))) |> 
+  rename_with(~str_replace(string = .x, pattern = "_os$", replacement = "_other")) |> 
+  rename(barrier_other = finacial_barrier_other)
 
 # tool
 loc_tool <- "inputs/ETH2303_JRMA_Somali_tool.xlsx"
