@@ -15,8 +15,8 @@ df_cleaning_log <- read_csv("inputs/combined_checks_eth_jrma_somali.csv", show_c
   ) |> 
   filter(!is.na(value), !is.na(uuid)) |>
   mutate(value = ifelse(value %in% c("blank"), NA, value),
-         #sheet = NA,
-         #index = NA,
+         sheet = NA,
+         index = NA,
          relevant = NA) |>
   select(uuid, type, name, value, issue_id, relevant, issue)
 
@@ -49,9 +49,7 @@ df_cleaning_log_main <-  df_cleaning_log
 df_cleaned_data <- supporteR::cleaning_support(input_df_raw_data = df_raw_data,
                                                input_df_survey = df_survey,
                                                input_df_choices = df_choices,
-                                               input_df_cleaning_log = df_cleaning_log_main) |> 
-  mutate(across(.cols = -c(any_of(cols_to_escape), matches("_age$|^age_|uuid")),
-                .fns = ~ifelse(str_detect(string = ., pattern = "^[9]{3,9}$"), "NA", .)))
+                                               input_df_cleaning_log = df_cleaning_log_main)
 
 # Add composite indicators at this stage ----------------------------------
 
