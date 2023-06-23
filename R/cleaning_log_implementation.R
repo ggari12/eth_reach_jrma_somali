@@ -70,35 +70,22 @@ df_cleaned_data <- supporteR::cleaning_support(input_df_raw_data = df_raw_data,
                                                input_df_survey = df_survey,
                                                input_df_choices = df_choices,
                                                input_df_cleaning_log = df_cleaning_log_main,
-                                               input_vars_to_remove_from_data = vars_to_remove_from_data
-                                                )
+                                               input_vars_to_remove_from_data = vars_to_remove_from_data)
 
 # Add composite indicators at this stage ----------------------------------
 
 
 
-# deletion log ------------------------------------------------------------
-
-df_deletion_log <- df_cleaning_log |> 
-  filter(type %in% c("remove_survey")) |> 
-  group_by(uuid) |> 
-  filter(row_number() == 1) |> 
-  ungroup()
-
 # write final datasets out -----------------------------------------------
 
-list_of_clean_datasets <- list("Raw_main" = df_raw_data,
-                               "cleaning_log" = df_cleaning_log,
-                               "deletion_log" = df_deletion_log,
-                               "cleaned_data" = df_cleaned_data
-)
+df_raw_data_final <- df_raw_data |> 
+  mutate(across(.cols = any_of(vars_to_remove_from_data), .fns = ~na_if(., .)))
 
-openxlsx::write.xlsx(x = list_of_clean_datasets,
+openxlsx::write.xlsx(x = df_raw_data_final,
+                     file = paste0("outputs/", butteR::date_file_prefix(), 
+                                   "_raw_data_eth_jrma_somali.xlsx"))
+
+openxlsx::write.xlsx(x = df_cleaned_data,
                      file = paste0("outputs/", butteR::date_file_prefix(), 
                                    "__clean_data_eth_jrma_somali.xlsx"), 
                      overwrite = TRUE, keepNA = TRUE, na.string = "NA")
-
-
-# openxlsx::write.xlsx(x = list_of_clean_datasets,
-#                      file = paste0("inputs/clean_data_eth_jrma_somali.xlsx"), 
-#                      overwrite = TRUE, keepNA = TRUE, na.string = "NA")
