@@ -12,7 +12,7 @@ df_cleaning_log <- read_csv("inputs/combined_checks_eth_jrma_somali.csv", show_c
          value = ifelse(is.na(value) & str_detect(string = issue_id, pattern = "logic_c_"), "blank", value),
          value = ifelse(type %in% c("remove_survey"), "blank", value),
          name = ifelse(is.na(name) & type %in% c("remove_survey"), "point_number", name)
-         ) |> 
+  ) |> 
   filter(!is.na(value), !is.na(uuid)) |>
   mutate(value = ifelse(value %in% c("blank"), NA, value),
          sheet = NA,
@@ -44,9 +44,6 @@ df_raw_data <- readxl::read_excel(path = loc_data, col_types = c_types) |>
   mutate(across(.cols = -c(contains(cols_to_escape)), 
                 .fns = ~str_replace(string = ., pattern = "\\+", replacement = "_"))
          )
-
-#remove blank columns from the survey (in range of 255 to 398)
-df_raw_data = subset(df_raw_data, select = -c(255:398)) 
 
 # tool
 loc_tool <- "inputs/ETH2303_JRMA_Somali_tool.xlsx"
@@ -88,13 +85,13 @@ df_deletion_log <- df_cleaning_log |>
   filter(row_number() == 1) |> 
   ungroup()
 
-# write final datasets out -----------------------------------------------But I also noticed that there are some columns without data. I am not sure why there columns are empty
+# write final datasets out -----------------------------------------------
 
 list_of_clean_datasets <- list("Raw_main" = df_raw_data,
                                "cleaning_log" = df_cleaning_log,
                                "deletion_log" = df_deletion_log,
                                "cleaned_data" = df_cleaned_data
-                               )
+)
 
 openxlsx::write.xlsx(x = list_of_clean_datasets,
                      file = paste0("outputs/", butteR::date_file_prefix(), 
