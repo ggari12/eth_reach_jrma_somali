@@ -87,5 +87,5 @@ openxlsx::write.xlsx(x = df_raw_data_final,
 
 openxlsx::write.xlsx(x = df_cleaned_data,
                      file = paste0("outputs/", butteR::date_file_prefix(), 
-                                   "__clean_data_eth_jrma_somali.xlsx"), 
+                                   "_clean_data_eth_jrma_somali.xlsx"), 
                      overwrite = TRUE, keepNA = TRUE, na.string = "NA")
