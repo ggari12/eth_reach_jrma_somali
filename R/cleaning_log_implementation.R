@@ -66,11 +66,19 @@ vars_to_remove_from_data = c("deviceid", "audit", "audit_URL", "instance_name",
 
 df_cleaning_log_main <-  df_cleaning_log 
 
-df_cleaned_data <- supporteR::cleaning_support(input_df_raw_data = df_raw_data,
+df_cleaning_step <- supporteR::cleaning_support(input_df_raw_data = df_raw_data,
                                                input_df_survey = df_survey,
                                                input_df_choices = df_choices,
                                                input_df_cleaning_log = df_cleaning_log_main,
                                                input_vars_to_remove_from_data = vars_to_remove_from_data)
+
+
+df_cleaned_data <- df_cleaning_step |> 
+mutate(across(contains("/"), .fns = ~ as.character(.x)),
+       across(contains("/"), .fns = ~ case_when( . %in% c("0") ~ "FALSE",
+                                                 . %in% c("1") ~ "TRUE",
+                                                 TRUE ~ .))
+       )
 
 # Add composite indicators at this stage ----------------------------------
 
