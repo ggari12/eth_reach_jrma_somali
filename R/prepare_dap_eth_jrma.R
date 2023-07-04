@@ -12,14 +12,12 @@ vars_to_remove <- c("consent",
 
 df_dap_file_data_composites <- df_tool_survey |> 
   filter(str_detect(string = type, pattern = "integer|date|select_one|select_multiple"),
-         #str_detect(string = name, pattern = "^fs_hhs|^fs_fcs|^rCSI|^livh"),
          !name %in% vars_to_remove) |> 
   select(variable = name) |>
 
   mutate(split = "all",
          subset_1 = "zone1",
-        #subset_2 = "repondent_type",
-         subset_3 = "repondent_type") |> 
+         subset_2 = "repondent_type") |> 
   pivot_longer(cols = starts_with("subset"), names_to = "subset_no", values_to = "subset_1") |> 
   filter(!is.na(subset_1), !subset_1 %in% c("NA")) |> 
   select(-subset_no)

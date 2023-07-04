@@ -34,7 +34,7 @@ ref_svy <- as_survey(.data = df_main_clean_data)
 
 df_main_analysis <- analysis_after_survey_creation(input_svy_obj = ref_svy,
                                                    input_dap = dap |> 
-                                                   filter(!variable %in% c("price_decrease_perc_wheat", 
+                                                   filter(!variable %in% c("price_decrease_perc_wheat",
                                                                            "ret_price_decrease_perc_wheat",
                                                                            "ret_price_decrease_perc_maize",
                                                                            "ret_price_decrease_perc_goat_meat",
@@ -42,7 +42,34 @@ df_main_analysis <- analysis_after_survey_creation(input_svy_obj = ref_svy,
                                                                            "ret_price_decrease_perc_laundary_soap",
                                                                            "ret_food_supplier_country",
                                                                            "ws_price_decrease_perc_tomato",
-                                                                           "ws_accessibility_zone"))
+                                                                           "ws_accessibility_zone",
+                                                                           "ret_credit_demand_per_customer",
+                                                                           "ret_reason_for_price_decrease_cooking_oil",
+                                                                           "ret_reason_for_price_decrease_goat_meat",
+                                                                           "ret_reason_for_price_decrease_laundary_soap",
+                                                                           "ret_reason_for_price_decrease_maize",
+                                                                           "ret_reason_for_price_decrease_tomato",
+                                                                           "ret_reason_for_price_decrease_wheat",
+                                                                           "ret_reason_for_price_increase_cooking_oil",
+                                                                           "ret_reason_for_price_increase_goat_meat",
+                                                                           "ret_reason_for_price_increase_laundary_soap",
+                                                                           "ret_reason_for_price_increase_maize",
+                                                                           "ret_reason_for_price_increase_tomato",
+                                                                           "ret_reason_for_price_increase_wheat",
+                                                                           "ret_types_of_barriers_to_access_cash",
+                                                                           "ws_credit_demand_per_customer",
+                                                                           "ws_reason_for_price_decrease_cooking_oil",
+                                                                           "ws_reason_for_price_decrease_goat_meat",
+                                                                           "ws_reason_for_price_decrease_laundary_soap",
+                                                                           "ws_reason_for_price_decrease_maize",
+                                                                           "ws_reason_for_price_decrease_tomato",
+                                                                           "ws_reason_for_price_decrease_wheat",
+                                                                           "ws_reason_for_price_increase_cooking_oil",
+                                                                           "ws_reason_for_price_increase_goat_meat",
+                                                                           "ws_reason_for_price_increase_laundary_soap",
+                                                                           "ws_reason_for_price_increase_maize",
+                                                                           "ws_reason_for_price_increase_tomato",
+                                                                           "ws_reason_for_price_increase_wheat"))
                                                                           )
 # merge analysis
 
@@ -54,13 +81,13 @@ full_analysis_long <- combined_analysis |>
          int.variable = ifelse(str_detect(string = variable, pattern = "^i\\."), str_replace(string = variable, pattern = "^i\\.", replacement = ""), variable)) |> 
   left_join(df_tool_data_support, by = c("int.variable" = "name")) |> 
   relocate(label, .after = variable) |> 
-  mutate(variable = ifelse(variable %in% c("i.fcs", "i.rcsi", "i.hhs"), str_replace(string = variable, pattern = "i.", replacement = "int."), variable),
-         select_type = ifelse(variable %in% c("int.fcs", "int.rcsi", "int.hhs"), "integer", select_type),
+  mutate(variable = ifelse(variable %in% c(), str_replace(string = variable, pattern = "i.", replacement = "int."), variable),
+         select_type = ifelse(variable %in% c(), "integer", select_type),
          label = ifelse(is.na(label), variable, label),
-         `mean/pct` = ifelse(select_type %in% c("integer") & !variable %in% c("i.fcs", "i.hhs") & !str_detect(string = variable, pattern = "^i\\."), `mean/pct`, `mean/pct`*100),
+         `mean/pct` = ifelse(select_type %in% c("integer") & !variable %in% c() & !str_detect(string = variable, pattern = "^i\\."), `mean/pct`, `mean/pct`*100),
          `mean/pct` = round(`mean/pct`, digits = 2)) |> 
-  mutate(variable = ifelse(variable %in% c("int.fcs", "int.rcsi", "int.hhs"), str_replace(string = variable, pattern = "int.", replacement = "i."), variable),
-         label = ifelse(label %in% c("int.fcs", "int.rcsi", "int.hhs"), str_replace(string = label, pattern = "int.", replacement = "i."), label)) |> 
+  mutate(variable = ifelse(variable %in% c(), str_replace(string = variable, pattern = "int.", replacement = "i."), variable),
+         label = ifelse(label %in% c(), str_replace(string = label, pattern = "int.", replacement = "i."), label)) |> 
   select(`Question`= label, 
          variable, 
          `choices/options` = variable_val, 
