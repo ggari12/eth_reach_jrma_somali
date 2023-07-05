@@ -30,7 +30,21 @@ df_dap_file_data_composites <- df_tool_survey |>
                             "i.ws_reason_for_price_decrease",
                             "i.mitigating_factors",
                             "i.ret_mitigating_factors",
-                            "i.ws_mitigating_factors"
+                            "i.ws_mitigating_factors",
+                            "i.ret_change_of_supplier",
+                            "i.ret_change_of_supplier_impact",
+                            "i.ws_change_of_supplier",
+                            "i.ws_change_of_supplier_impact",
+                            "i.ws_supply_chain_barriers_yesno",
+                            "i.ws_supply_chain_barriers",
+                            "int.ret_price",
+                            "int.ret_stock_days",
+                            "int.ret_resupply_days",
+                            "i.ret_meet_demand",
+                            "int.ws_price",
+                            "int.ws_stock_days",
+                            "int.ws_resupply_days",
+                            "i.ws_meet_demand"
   )) |> 
 
   mutate(split = "all",

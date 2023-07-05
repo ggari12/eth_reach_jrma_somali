@@ -78,6 +78,7 @@ df_main_analysis <- analysis_after_survey_creation(input_svy_obj = ref_svy,
                                                                            "i.ws_reason_for_price_increase",
                                                                            "i.ws_reason_for_price_decrease"))
                                                                           )
+
 # Please wait the following lines of code might takes 2/3 minutes
 # merge analysis
 
@@ -91,14 +92,20 @@ full_analysis_long <- combined_analysis |>
   relocate(label, .after = variable) |> 
   mutate(variable = ifelse(variable %in% c("i.price_change","i.price_increase_perc","i.price_decrease_perc","i.ret_price_change","i.ret_price_increase_perc","i.ret_price_decrease_perc",
                                            "i.ret_reason_for_price_increase","i.ret_reason_for_price_decrease","i.ws_price_change","i.ws_price_increase_perc","i.ws_price_decrease_perc",
-                                           "i.ws_reason_for_price_increase","i.ws_reason_for_price_decrease","i.mitigating_factors","i.ret_mitigating_factors","i.ws_mitigating_factors"), 
+                                           "i.ws_reason_for_price_increase","i.ws_reason_for_price_decrease","i.mitigating_factors","i.ret_mitigating_factors","i.ws_mitigating_factors",
+                                           "i.ret_change_of_supplier","i.ret_change_of_supplier_impact","i.ws_change_of_supplier","i.ws_change_of_supplier_impact",
+                                           "i.ws_supply_chain_barriers_yesno","i.ws_supply_chain_barriers","i.ret_meet_demand","i.ws_meet_demand"), 
                            str_replace(string = variable, pattern = "i.", replacement = "int."), variable),
-         select_type = ifelse(variable %in% c(), "integer", select_type),
+         select_type = ifelse(variable %in% c("int.ret_price","int.ret_stock_days","int.ret_resupply_days","int.ws_price","int.ws_stock_days","int.ws_resupply_days"), "integer", select_type),
          label = ifelse(is.na(label), variable, label),
-         `mean/pct` = ifelse(select_type %in% c("integer") & !variable %in% c() & !str_detect(string = variable, pattern = "^i\\."), `mean/pct`, `mean/pct`*100),
+         `mean/pct` = ifelse(select_type %in% c("integer") & !variable %in% c("i.price_change","i.price_increase_perc","i.price_decrease_perc","i.ret_price_change","i.ret_price_increase_perc","i.ret_price_decrease_perc",
+                                                                              "i.ret_reason_for_price_increase","i.ret_reason_for_price_decrease","i.ws_price_change","i.ws_price_increase_perc","i.ws_price_decrease_perc",
+                                                                              "i.ws_reason_for_price_increase","i.ws_reason_for_price_decrease","i.mitigating_factors","i.ret_mitigating_factors","i.ws_mitigating_factors",
+                                                                              "i.ret_change_of_supplier","i.ret_change_of_supplier_impact","i.ws_change_of_supplier","i.ws_change_of_supplier_impact",
+                                                                              "i.ws_supply_chain_barriers_yesno","i.ws_supply_chain_barriers","i.ret_meet_demand","i.ws_meet_demand") & !str_detect(string = variable, pattern = "^i\\."), `mean/pct`, `mean/pct`*100),
          `mean/pct` = round(`mean/pct`, digits = 2)) |> 
-  mutate(variable = ifelse(variable %in% c(), str_replace(string = variable, pattern = "int.", replacement = "i."), variable),
-         label = ifelse(label %in% c(), str_replace(string = label, pattern = "int.", replacement = "i."), label)) |> 
+  mutate(variable = ifelse(variable %in% c("int.ret_price","int.ret_stock_days","int.ret_resupply_days","int.ws_price","int.ws_stock_days","int.ws_resupply_days"), str_replace(string = variable, pattern = "int.", replacement = "i."), variable),
+         label = ifelse(label %in% c("int.ret_price","int.ret_stock_days","int.ret_resupply_days","int.ws_price","int.ws_stock_days","int.ws_resupply_days"), str_replace(string = label, pattern = "int.", replacement = "i."), label)) |> 
   select(`Question`= label, 
          variable, 
          `choices/options` = variable_val, 

@@ -18,7 +18,21 @@ create_composite_indicators <- function(input_df) {
            i.ws_reason_for_price_decrease = mode_with_out_nc(c_across(ws_reason_for_price_decrease_wheat:ws_reason_for_price_decrease_laundary_soap), na.rm = T),
            i.mitigating_factors = mode_with_out_nc(c_across(mitigating_factors_wheat:mitigating_factors_laundary_soap), na.rm = T),
            i.ret_mitigating_factors = mode_with_out_nc(c_across(ret_mitigating_factors_wheat:ret_mitigating_factors_laundary_soap), na.rm = T),
-           i.ws_mitigating_factors = mode_with_out_nc(c_across(ws_mitigating_factors_wheat:ws_mitigating_factors_laundary_soap), na.rm = T)
+           i.ws_mitigating_factors = mode_with_out_nc(c_across(ws_mitigating_factors_wheat:ws_mitigating_factors_laundary_soap), na.rm = T),
+           i.ret_change_of_supplier = mode_with_out_nc(c_across(ret_change_of_supplier_wheat:ret_change_of_supplier_laundary_soap), na.rm = T),
+           i.ret_change_of_supplier_impact = mode_with_out_nc(c_across(ret_change_of_supplier_impact_wheat:ret_change_of_supplier_impact_laundary_soap), na.rm = T),
+           i.ws_change_of_supplier = mode_with_out_nc(c_across(ws_change_of_supplier_wheat:ws_change_of_supplier_laundary_soap), na.rm = T),
+           i.ws_change_of_supplier_impact = mode_with_out_nc(c_across(ws_change_of_supplier_impact_wheat:ws_change_of_supplier_impact_laundary_soap), na.rm = T),
+           i.ws_supply_chain_barriers_yesno = mode_with_out_nc(c_across(ws_supply_chain_barriers_yesno_wheat:ws_supply_chain_barriers_yesno_laundary_soap), na.rm = T),
+           i.ws_supply_chain_barriers = mode_with_out_nc(c_across(ws_supply_chain_barriers_wheat:ws_supply_chain_barriers_laundary_soap), na.rm = T),
+           int.ret_price = median(c_across(all_of(c("ret_wheat_price", "ret_maize_price","ret_goat_meat_price", "ret_tomato_price", "ret_cooking_oil_price", "ret_laundary_soap_price"))), na.rm = T),
+           int.ret_stock_days = median(c_across(all_of(c("ret_wheat_stock_days", "ret_maize_stock_days","ret_goat_meat_stock_days", "ret_tomato_stock_days", "ret_cooking_oil_stock_days", "ret_laundary_soap_stock_days"))), na.rm = T),
+           int.ret_resupply_days = median(c_across(all_of(c("ret_wheat_resupply_days", "ret_maize_resupply_days","ret_goat_meat_resupply_days", "ret_tomato_resupply_days", "ret_cooking_oil_resupply_days", "ret_laundary_soap_resupply_days"))), na.rm = T),
+           i.ret_meet_demand = mode_with_out_nc(c_across(all_of(c("ret_wheat_meet_demand", "ret_maize_meet_demand","ret_goat_meat_meet_demand", "ret_tomato_meet_demand", "ret_cooking_oil_meet_demand", "ret_laundary_soap_meet_demand"))), na.rm = T),
+           int.ws_price = median(c_across(all_of(c("ws_wheat_price", "ws_maize_price","ws_goat_meat_price", "ws_tomato_price", "ws_cooking_oil_price", "ws_laundary_soap_price"))), na.rm = T),
+           int.ws_stock_days = median(c_across(all_of(c("ws_wheat_stock_days", "ws_maize_stock_days","ws_goat_meat_stock_days", "ws_tomato_stock_days", "ws_cooking_oil_stock_days", "ws_laundary_soap_stock_days"))), na.rm = T),
+           int.ws_resupply_days = median(c_across(all_of(c("ws_wheat_resupply_days", "ws_maize_resupply_days","ws_goat_meat_resupply_days", "ws_tomato_resupply_days", "ws_cooking_oil_resupply_days", "ws_laundary_soap_resupply_days"))), na.rm = T),
+           i.ws_meet_demand = mode_with_out_nc(c_across(all_of(c("ws_wheat_meet_demand", "ws_maize_meet_demand","ws_goat_meat_meet_demand", "ws_tomato_meet_demand", "ws_cooking_oil_meet_demand", "ws_laundary_soap_meet_demand"))), na.rm = T)
     ) |>
     ungroup()
 }
