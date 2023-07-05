@@ -1,6 +1,8 @@
 library(tidyverse)
 library(srvyr)
-library(supporteR)  
+library(supporteR) 
+
+source("R/composite_indicators.R")
 
 # packages to install incase
 # devtools::install_github("zackarno/butteR")
@@ -12,7 +14,8 @@ data_path <- "inputs/clean_data_eth_jrma_somali.xlsx"
 data_nms <- names(readxl::read_excel(path = data_path, n_max = 2000))
 c_types <- ifelse(str_detect(string = data_nms, pattern = "_os$|_other$"), "text", "guess")
 
-df_main_clean_data <- readxl::read_excel(path = data_path, col_types = c_types, na = "NA")
+df_main_clean_data <- readxl::read_excel(path = data_path, col_types = c_types, na = "NA") |> 
+  create_composite_indicators() 
 
 # tool
 df_survey <- readxl::read_excel("inputs/ETH2303_JRMA_Somali_tool.xlsx", sheet = "survey") |> 
@@ -69,8 +72,13 @@ df_main_analysis <- analysis_after_survey_creation(input_svy_obj = ref_svy,
                                                                            "ws_reason_for_price_increase_laundary_soap",
                                                                            "ws_reason_for_price_increase_maize",
                                                                            "ws_reason_for_price_increase_tomato",
-                                                                           "ws_reason_for_price_increase_wheat"))
+                                                                           "ws_reason_for_price_increase_wheat",
+                                                                           "i.ret_reason_for_price_increase",
+                                                                           "i.ret_reason_for_price_decrease",
+                                                                           "i.ws_reason_for_price_increase",
+                                                                           "i.ws_reason_for_price_decrease"))
                                                                           )
+# Please wait the following lines of code might takes 2/3 minutes
 # merge analysis
 
 combined_analysis <- df_main_analysis
@@ -81,7 +89,10 @@ full_analysis_long <- combined_analysis |>
          int.variable = ifelse(str_detect(string = variable, pattern = "^i\\."), str_replace(string = variable, pattern = "^i\\.", replacement = ""), variable)) |> 
   left_join(df_tool_data_support, by = c("int.variable" = "name")) |> 
   relocate(label, .after = variable) |> 
-  mutate(variable = ifelse(variable %in% c(), str_replace(string = variable, pattern = "i.", replacement = "int."), variable),
+  mutate(variable = ifelse(variable %in% c("i.price_change","i.price_increase_perc","i.price_decrease_perc","i.ret_price_change","i.ret_price_increase_perc","i.ret_price_decrease_perc",
+                                           "i.ret_reason_for_price_increase","i.ret_reason_for_price_decrease","i.ws_price_change","i.ws_price_increase_perc","i.ws_price_decrease_perc",
+                                           "i.ws_reason_for_price_increase","i.ws_reason_for_price_decrease","i.mitigating_factors","i.ret_mitigating_factors","i.ws_mitigating_factors"), 
+                           str_replace(string = variable, pattern = "i.", replacement = "int."), variable),
          select_type = ifelse(variable %in% c(), "integer", select_type),
          label = ifelse(is.na(label), variable, label),
          `mean/pct` = ifelse(select_type %in% c("integer") & !variable %in% c() & !str_detect(string = variable, pattern = "^i\\."), `mean/pct`, `mean/pct`*100),

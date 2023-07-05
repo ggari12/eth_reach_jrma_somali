@@ -14,6 +14,24 @@ df_dap_file_data_composites <- df_tool_survey |>
   filter(str_detect(string = type, pattern = "integer|date|select_one|select_multiple"),
          !name %in% vars_to_remove) |> 
   select(variable = name) |>
+  bind_rows(tibble::tribble(~variable,
+                            "i.price_change",
+                            "i.price_increase_perc",
+                            "i.price_decrease_perc",
+                            "i.ret_price_change",
+                            "i.ret_price_increase_perc",
+                            "i.ret_price_decrease_perc",
+                            "i.ret_reason_for_price_increase",
+                            "i.ret_reason_for_price_decrease",
+                            "i.ws_price_change",
+                            "i.ws_price_increase_perc",
+                            "i.ws_price_decrease_perc",
+                            "i.ws_reason_for_price_increase",
+                            "i.ws_reason_for_price_decrease",
+                            "i.mitigating_factors",
+                            "i.ret_mitigating_factors",
+                            "i.ws_mitigating_factors"
+  )) |> 
 
   mutate(split = "all",
          subset_1 = "zone1",
