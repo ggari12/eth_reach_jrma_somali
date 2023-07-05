@@ -79,7 +79,7 @@ df_main_analysis <- analysis_after_survey_creation(input_svy_obj = ref_svy,
                                                                            "i.ws_reason_for_price_decrease"))
                                                                           )
 
-# Please wait the following lines of code might takes 2/3 minutes
+# Please wait the following lines of code might takes 3/5 minutes
 # merge analysis
 
 combined_analysis <- df_main_analysis

@@ -8,7 +8,7 @@ vars_to_remove <- c("consent",
                     "woreda1",
                     "ws_enumerator_comments",
                     "gps"
-)
+                 )
 
 df_dap_file_data_composites <- df_tool_survey |> 
   filter(str_detect(string = type, pattern = "integer|date|select_one|select_multiple"),
@@ -37,13 +37,13 @@ df_dap_file_data_composites <- df_tool_survey |>
                             "i.ws_change_of_supplier_impact",
                             "i.ws_supply_chain_barriers_yesno",
                             "i.ws_supply_chain_barriers",
-                            "int.ret_price",
-                            "int.ret_stock_days",
-                            "int.ret_resupply_days",
+                            "i.ret_price",
+                            "i.ret_stock_days",
+                            "i.ret_resupply_days",
                             "i.ret_meet_demand",
-                            "int.ws_price",
-                            "int.ws_stock_days",
-                            "int.ws_resupply_days",
+                            "i.ws_price",
+                            "i.ws_stock_days",
+                            "i.ws_resupply_days",
                             "i.ws_meet_demand"
   )) |> 
 
