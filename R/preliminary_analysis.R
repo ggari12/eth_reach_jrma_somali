@@ -23,7 +23,7 @@ df_survey <- readxl::read_excel("inputs/ETH2303_JRMA_Somali_tool.xlsx", sheet = 
          name = ifelse(name %in% c("finacial_barrier_other"), "barrier_other", name))
 
 df_tool_data_support <- df_survey |> 
-  select(type, name, label = `label::English`) |> 
+  select(type, name, label) |> 
   filter(str_detect(string = type, pattern = "decimal|integer|date|select_one|select_multiple")) |> 
   separate(col = type, into = c("select_type", "list_name"), sep =" ", remove = TRUE, extra = "drop" )
 
@@ -78,6 +78,7 @@ df_main_analysis <- analysis_after_survey_creation(input_svy_obj = ref_svy,
                                                                            "i.ws_reason_for_price_increase",
                                                                            "i.ws_reason_for_price_decrease"))
                                                                           )
+
 
 
 
