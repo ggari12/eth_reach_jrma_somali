@@ -24,7 +24,7 @@ df_survey <- readxl::read_excel("inputs/ETH2303_JRMA_Somali_tool.xlsx", sheet = 
 
 df_tool_data_support <- df_survey |> 
   select(type, name, label = `label::English`) |> 
-  filter(str_detect(string = type, pattern = "integer|date|select_one|select_multiple")) |> 
+  filter(str_detect(string = type, pattern = "decimal|integer|date|select_one|select_multiple")) |> 
   separate(col = type, into = c("select_type", "list_name"), sep =" ", remove = TRUE, extra = "drop" )
 
 # dap
