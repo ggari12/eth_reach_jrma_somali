@@ -11,7 +11,7 @@ vars_to_remove <- c("consent",
                  )
 
 df_dap_file_data_composites <- df_tool_survey |> 
-  filter(str_detect(string = type, pattern = "integer|date|select_one|select_multiple"),
+  filter(str_detect(string = type, pattern = "decimal|integer|date|select_one|select_multiple"),
          !name %in% vars_to_remove) |> 
   select(variable = name) |>
   bind_rows(tibble::tribble(~variable,
