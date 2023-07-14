@@ -58,6 +58,7 @@ create_composite_indicators <- function(input_df) {
            #i.ws_mitigating_factors = mode_with_out_nc(c_across(ws_mitigating_factors_wheat:ws_mitigating_factors_laundary_soap), na.rm = T),
            i.ret_change_of_supplier = mode_with_out_nc(c_across(ret_change_of_supplier_wheat:ret_change_of_supplier_laundary_soap), na.rm = T),
            #i.ret_change_of_supplier_impact = mode_with_out_nc(c_across(ret_change_of_supplier_impact_wheat:ret_change_of_supplier_impact_laundary_soap), na.rm = T),
+           i.ret_supply_chain_barriers_yesno = mode_with_out_nc(c_across(ret_supply_chain_barriers_yesno_wheat:ret_supply_chain_barriers_laundary_soap), na.rm = T),
            i.ws_change_of_supplier = mode_with_out_nc(c_across(ws_change_of_supplier_wheat:ws_change_of_supplier_laundary_soap), na.rm = T),
            #i.ws_change_of_supplier_impact = mode_with_out_nc(c_across(ws_change_of_supplier_impact_wheat:ws_change_of_supplier_impact_laundary_soap), na.rm = T),
            i.ws_supply_chain_barriers_yesno = mode_with_out_nc(c_across(ws_supply_chain_barriers_yesno_wheat:ws_supply_chain_barriers_yesno_laundary_soap), na.rm = T),
